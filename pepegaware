@@ -1,0 +1,649 @@
+local library = loadstring(game:HttpGet(('https://pastebin.com/raw/gzBMzHg6'),true))()
+local ESP = loadstring(game:HttpGet("https://kiriot22.com/releases/ESP.lua"))()
+
+library.settings = {
+    title = "NiggaHook v69420",
+    footer = "Pepega Clap",
+    modal = true,
+    toggle = Enum.KeyCode.Insert,
+    font = Enum.Font.Code,
+    textsize = 14,
+    textstroke = true
+}
+
+library.colors = {
+    theme = Color3.fromRGB(0,255,0),
+    text = Color3.fromRGB(255,255,255),
+    main = Color3.fromRGB(0,100,0),
+    fade = Color3.fromRGB(0,125,0),
+    outline = Color3.fromRGB(10,10,10),
+    tabholder = Color3.fromRGB(60,50,60),
+    tabbutton = Color3.fromRGB(30,30,30),
+    tabselected = Color3.fromRGB(100,200,100),
+    scrollbar = Color3.fromRGB(255,255,255),
+}
+
+local MainWindow = library:CreateWindow(Vector2.new(500, 500), Vector2.new(120, 120))
+
+local RageTab = MainWindow:CreateTab("No need")
+local LegitTab = MainWindow:CreateTab("HITREG BORKEN")
+local VisualsTab = MainWindow:CreateTab("Cool visuals")
+local MiscellaneousTab = MainWindow:CreateTab("Phoon")
+
+-- visuals
+local VisualsTabCategoryMain = VisualsTab:AddLocalTab("Camera")
+-- misc
+local MiscellaneousTabCategoryMain = MiscellaneousTab:AddLocalTab("Movement")
+
+VisualsTabCategoryMain:AddSlider("Field Of View", 120, 80, function(val)
+	workspace.CurrentCamera.FieldOfView = val
+    getsenv(game.Players.LocalPlayer.PlayerGui.Client).fieldofview = val
+end)
+
+
+VisualsTabCategoryMain:AddToggle("Bullet Tracers", false, function(val)
+    BulletTracersEnabled = val
+end)
+
+local VisualsTabCategoryViewmodel = VisualsTab:AddLocalTab("Viewmodel")
+
+VisualsTabCategoryViewmodel:AddToggle("Enabled", false, function(val)
+    ViewmodelEnabled = val
+end)
+
+VisualsTabCategoryViewmodel:AddSlider("X", 360, 180, function(val)
+    ViewmodelX = val
+end)
+
+VisualsTabCategoryViewmodel:AddSlider("Y", 360, 180, function(val)
+    ViewmodelY = val
+end)
+
+VisualsTabCategoryViewmodel:AddSlider("Z", 360, 180, function(val)
+    ViewmodelZ = val
+end)
+
+local VisualsTabCategoryWorld = VisualsTab:AddLocalTab("World")
+
+VisualsTabCategoryWorld:AddToggle("Nightmode", false, function(val)
+    if val == true then
+        game.Lighting.TimeOfDay = 20
+    end
+end)
+
+VisualsTabCategoryWorld:AddCP("WorldColor", Color3.new(1,1,1), function(val)
+    game.Lighting.Ambient = val
+end)
+
+local VisualsTabCategoryCategoryESP = VisualsTab:AddLocalTab("ESP")
+
+VisualsTabCategoryCategoryESP:AddToggle("Enabled", false, function(val)
+    ESP:Toggle(val)
+end)
+
+VisualsTabCategoryCategoryESP:AddToggle("Show Names", false, function(val)
+    ESP.Names = val
+end)
+
+VisualsTabCategoryCategoryESP:AddToggle("Show Boxes", false, function(val)
+    ESP.Boxes = val
+end)
+
+VisualsTabCategoryCategoryESP:AddToggle("Show Tracers", false, function(val)
+    ESP.Tracers = val
+end)
+
+local VisualsTabCategorySounds = VisualsTab:AddLocalTab("Sounds")
+
+VisualsTabCategorySounds:AddToggle("Hitsound", false, function(val)
+    if val == true then
+        game.Players.LocalPlayer.Additionals.TotalDamage.Changed:Connect(function()
+			if game.Players.LocalPlayer.Additionals.TotalDamage.Value ~= 0 then
+				spawn(function()
+					local marker = Instance.new("Sound")
+					marker.Parent = game:GetService("SoundService")
+					marker.SoundId = "rbxassetid://4817809188"
+					marker.Volume = 5
+					marker:Play()
+				end)
+			end
+		end)
+    end
+end)
+
+VisualsTabCategorySounds:AddToggle("Killsound", false, function(val)
+    if val == true then
+        game.Players.LocalPlayer.Status.Kills.Changed:Connect(function(val)
+			if val ~= 0 then
+				spawn(function()
+					local marker = Instance.new("Sound")
+					marker.Parent = game:GetService("SoundService")
+					marker.SoundId = "rbxassetid://2607544190"
+					marker.Volume = 4
+					marker:Play()
+				end)
+			end
+		end)
+    end
+end)
+
+local VisualsTabCategoryRemoveEffects = VisualsTab:AddLocalTab("Remove Effects")
+
+VisualsTabCategoryRemoveEffects:AddToggle("Remove Flash", false, function(val)
+    if val == true then
+        game.ReplicatedStorage.Events.Flash:Destroy()
+    end
+end)
+
+VisualsTabCategoryRemoveEffects:AddToggle("Remove Smoke", false, function(val)
+    if val == true then
+        game.Workspace.Ray_Ignore.Smokes:Destroy()
+    end
+end)
+
+VisualsTabCategoryRemoveEffects:AddToggle("Remove Recoil", false, function(val)
+    if val == true then
+        game:GetService("RunService"):BindToRenderStep("NoRecoil", 100, function()
+			local cbClient = getsenv(game.Players.LocalPlayer.PlayerGui.Client)
+			cbClient.resetaccuracy()
+			cbClient.RecoilX = 0
+			cbClient.RecoilY = 0
+		end)
+    end
+end)
+
+VisualsTabCategoryRemoveEffects:AddToggle("Remove Scope", false, function(val)
+    if val == true then
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.ImageTransparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope.ImageTransparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope.Blur.ImageTransparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope.Blur.Blur.ImageTransparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Frame1.Transparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Frame2.Transparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Frame3.Transparency = 1
+        game.Players.LocalPlayer.PlayerGui.GUI.Crosshairs.Frame4.Transparency = 1
+    end
+end)
+
+local VisualsTabCategoryArmsColors = VisualsTab:AddLocalTab("Arms Colors")
+
+VisualsTabCategoryArmsColors:AddToggle("Enabled", false, function(val)
+    ArmsColorsEnabled = val
+end)
+
+VisualsTabCategoryArmsColors:AddCP("Arms Color", Color3.new(1,1,1), function(val)
+    ArmsColorsColor = val
+end)
+
+VisualsTabCategoryArmsColors:AddSlider("Arms Transparency", 100, 0, function(val)
+    ArmsColorsTransparency = val/100
+end)
+
+VisualsTabCategoryArmsColors:AddCP("Weapons Color", Color3.new(1,1,1), function(val)
+    ArmsColorsWeaponsColor = val
+end)
+
+VisualsTabCategoryArmsColors:AddSlider("Weapons Transparency", 100, 0, function(val)
+    ArmsColorsWeaponsTransparency = val/100
+end)
+
+local thirdpersonenabled = false
+VisualsTabCategoryMain:AddKeybind("Third Person Keybind", Enum.KeyCode.X, function(val)
+	thirdpersonenabled = not thirdpersonenabled
+	if thirdpersonenabled == true then
+		local distance = 10
+			game:GetService("RunService"):BindToRenderStep("ThirdPerson", 100, function()
+			if game.Players.LocalPlayer.CameraMinZoomDistance ~= distance then
+				game.Players.LocalPlayer.CameraMinZoomDistance = distance
+				game.Players.LocalPlayer.CameraMaxZoomDistance = distance
+				workspace.ThirdPerson.Value = true
+			end
+		end)
+	else
+		game:GetService("RunService"):UnbindFromRenderStep("ThirdPerson")
+		game.Players.LocalPlayer.CameraMinZoomDistance = 0
+		game.Players.LocalPlayer.CameraMaxZoomDistance = 0
+		workspace.ThirdPerson.Value = false
+	end
+end)
+
+local RageTabCategoryMain = RageTab:AddLocalTab("Aimbot")
+
+RageTabCategoryMain:AddToggle("Enabled", false, function(val)
+    if val == true then
+        local function PLR_VISIBLE(plr)
+			local IgnoreList = {game:GetService("Players").LocalPlayer.Character}
+			local NewRay = Ray.new(workspace.CurrentCamera.CFrame.p, (plr.Character.HumanoidRootPart.Position - workspace.CurrentCamera.CFrame.p).unit * 2048)
+			local FindPart = workspace:FindPartOnRayWithIgnoreList(NewRay, IgnoreList)
+			
+			if FindPart and FindPart:IsDescendantOf(plr.Character) then
+				return true
+			end
+			
+			return false
+		end
+
+		while true do
+			wait()
+			pcall(function()
+			for i,v in pairs(game.Players:GetPlayers()) do
+				if v.Team ~= game.Players.LocalPlayer.Team and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 and PLR_VISIBLE(v) == true then
+					local WeaponName = game.Players.LocalPlayer.Character.EquippedTool.Value
+					
+					if game.ReplicatedStorage.Weapons[WeaponName]:FindFirstChild("Chamber") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude > 10 then
+						return
+					end
+					
+					print("C")
+					
+					game.ReplicatedStorage.Events.HitPart:FireServer(unpack({
+						[1] = v.Character.Head,
+						[2] = v.Character.Head.Position,
+						[3] = WeaponName,
+						[4] = 100,
+						[5] = game.Players.LocalPlayer.Character.Gun,
+						[6] = 1,
+						[7] = 1,
+						[8] = 1,
+						[9] = 1,
+						[10] = false,
+						[11] = Vector3.new(),
+						[12] = math.rad(1,100000),
+						[13] = Vector3.new()
+					}))
+					
+					getsenv(game.Players.LocalPlayer.PlayerGui:WaitForChild("Client")).firebullet()
+					wait(game.ReplicatedStorage.Weapons[WeaponName].FireRate.Value)
+				end
+			end
+			end)
+		end
+	end
+end)
+
+RageTabCategoryMain:AddToggle("Anti-Aim", false, function(val)
+    if val == true then
+        function RotatePlayer(pos)
+			pcall(function()
+				if game.Players.LocalPlayer.Character then
+					game.Players.LocalPlayer.Character.Humanoid.AutoRotate = false
+					local gyro = Instance.new('BodyGyro')
+					gyro.D = 0 -- smoothness
+					gyro.P = 1000000
+					gyro.MaxTorque = Vector3.new(0, 1000000, 0)
+					gyro.Parent = game.Players.LocalPlayer.Character.UpperTorso
+					gyro.CFrame = CFrame.new(gyro.Parent.Position,  pos)
+					wait()
+					gyro:Destroy()
+				end
+			end)
+		end
+
+		while true do
+			pcall(function()
+			wait()
+			if game.Players.LocalPlayer.Character then
+				game.Players.LocalPlayer.Character.Humanoid.AutoRotate = false
+				RotatePlayer((workspace.CurrentCamera.CFrame * CFrame.new(-4, 0, 0)).p)
+				game.ReplicatedStorage.Events.ControlTurn:FireServer(-1, false)
+			end
+			end)
+		end
+    end
+end)
+
+local LegitTabCategoryMain = LegitTab:AddLocalTab("SemiRage")
+
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local CurrentCamera = game.Workspace.CurrentCamera
+local AimbotEnabled = false
+local AimbotTargetPart = "Head"
+
+function GetNearestPlayerToMouse()
+	local players = {}
+	local plrhld = {}
+	local dists = {}
+	for i, v in pairs(game.Players:GetPlayers()) do
+		if v~=Player then
+			table.insert(players,v)
+		end
+	end
+	for i, v in pairs(players) do
+		if v and (v.Character)~=nil then
+			local head = v.Character:FindFirstChild("Head")
+			if head~=nil then
+				local dist = (head.Position-game.Workspace.CurrentCamera.CoordinateFrame.p).magnitude
+				plrhld[v.Name..i] = {}
+				plrhld[v.Name..i].dist = dist
+				plrhld[v.Name..i].plr=v
+				local ray = Ray.new(game.Workspace.CurrentCamera.CoordinateFrame.p,(Mouse.Hit.p-game.Workspace.CurrentCamera.CoordinateFrame.p).unit*dist)
+				local hit,pos = game.Workspace:FindPartOnRay(ray,game.Workspace)
+				local diff = math.floor((pos-head.Position).magnitude)
+				plrhld[v.Name..i].diff=diff
+				table.insert(dists,diff)
+			end
+		end
+	end
+	if unpack(dists) == nil then
+		return false
+	end
+	local ldist = math.floor(math.min(unpack(dists)))
+	if ldist > 20 then
+		return false
+	end
+	for i,v in pairs(plrhld) do
+		if v.diff == ldist then
+			return v.plr
+		end
+	end
+	return false
+end
+
+function AIMBOT_LOOP()
+	local Target = GetNearestPlayerToMouse()
+	if Target ~= false then
+		local TargetPart = Target.Character:FindFirstChild(AimbotTargetPart)
+		if TargetPart then
+			game.Workspace.CurrentCamera.CoordinateFrame = CFrame.new(game.Workspace.CurrentCamera.CoordinateFrame.p, TargetPart.CFrame.p)
+		end
+	end
+end
+
+Mouse.Button1Down:Connect(function()
+	AimbotEnabled = true
+end)
+
+Mouse.Button1Up:Connect(function()
+	AimbotEnabled = false
+end) 
+
+LegitTabCategoryMain:AddToggle("Enabled", false, function(val)
+	if val == true then
+		AIMBOT_LOOP_SET = game:GetService("RunService").RenderStepped:connect(AIMBOT_LOOP)
+	else
+		if AIMBOT_LOOP_SET then
+			AIMBOT_LOOP_SET:Disconnect()
+		end 
+	end
+end)
+
+LegitTabCategoryMain:AddDropdown("Target Part", 1, {"Head", "HumanoidRootPart"}, function(val)
+    AimbotTargetPart = val
+end)
+
+local LegitTabCategoryMain = LegitTab:AddLocalTab("Legit")
+
+LegitTabCategoryMain:AddToggle("Backtrack", false, function(val)
+    if val == true then
+        local BacktrackFolder = Instance.new("Folder")
+		BacktrackFolder.Parent = workspace
+		BacktrackFolder.Name = "BacktrackFolder"
+
+		spawn(function()
+			while true do
+				wait()
+				for i,v in pairs(game.Players:GetPlayers()) do
+					pcall(function()
+						if v.Character and v.Character.Humanoid and v.Character.Humanoid.Health > 0 and v.TeamColor ~= game.Players.LocalPlayer.TeamColor then
+							local BacktrackPart = Instance.new("Part")
+							BacktrackPart.Name = v.Name
+							BacktrackPart.Anchored = true
+							BacktrackPart.CanCollide = false
+							BacktrackPart.Position = v.Character.Head.Position
+							BacktrackPart.Orientation = v.Character.Head.Orientation
+							BacktrackPart.Size = Vector3.new(1, 1, 1)
+							BacktrackPart.Transparency = 0.5
+							BacktrackPart.BrickColor = BrickColor.new("Institutional white")
+							BacktrackPart.Material = "SmoothPlastic"
+							BacktrackPart.Parent = BacktrackFolder
+
+							local BacktrackTag = Instance.new("ObjectValue")
+							BacktrackTag.Parent = BacktrackPart
+							BacktrackTag.Name = "PlayerName"
+							BacktrackTag.Value = v
+
+							spawn(function()
+								wait(500/1000)
+								BacktrackPart:Destroy()
+							end)
+						end
+					end)
+				end
+			end
+		end)
+	end
+end)
+
+LegitTabCategoryMain:AddToggle("Fix Hitreg", false, function(val)
+    if val == true then
+        local BacktrackFolder = Instance.new("Folder")
+		BacktrackFolder.Parent = workspace
+		BacktrackFolder.Name = "BacktrackFolder"
+
+		spawn(function()
+			while true do
+				wait()
+				for i,v in pairs(game.Players:GetPlayers()) do
+					pcall(function()
+						if v.Character and v.Character.Humanoid and v.Character.Humanoid.Health > 0 and v.TeamColor ~= game.Players.LocalPlayer.TeamColor then
+							local BacktrackPart = Instance.new("Part")
+							BacktrackPart.Name = v.Name
+							BacktrackPart.Anchored = true
+							BacktrackPart.CanCollide = false
+							BacktrackPart.Position = v.Character.Head.Position
+							BacktrackPart.Orientation = v.Character.Head.Orientation
+							BacktrackPart.Size = Vector3.new(1, 1, 1)
+							BacktrackPart.Transparency = 0.5
+							BacktrackPart.BrickColor = BrickColor.new("Institutional white")
+							BacktrackPart.Material = "SmoothPlastic"
+							BacktrackPart.Parent = BacktrackFolder
+
+							local BacktrackTag = Instance.new("ObjectValue")
+							BacktrackTag.Parent = BacktrackPart
+							BacktrackTag.Name = "PlayerName"
+							BacktrackTag.Value = v
+
+							spawn(function()
+								wait(0/0)
+								BacktrackPart:Destroy()
+							end)
+						end
+					end)
+				end
+			end
+		end)
+	end
+end)
+
+game.Workspace.CurrentCamera.ChildAdded:Connect(function(ViewmodelFolder)
+	spawn(function()
+		if ViewmodelFolder.Name == 'Arms' and ArmsColorsEnabled == true then
+			for i,v in pairs(ViewmodelFolder:GetChildren()) do
+				if v:IsA("Model") and v:FindFirstChild("Left Arm") and v:FindFirstChild("Right Arm") then
+					-- Arms Pointer
+					local RightArm = v["Right Arm"]
+					local LeftArm = v["Left Arm"]
+					-- Gloves Pointer
+					local RightGlove = RightArm:FindFirstChild("Glove") or RightArm:FindFirstChild("RGlove")
+					local LeftGlove = LeftArm:FindFirstChild("Glove") or LeftArm:FindFirstChild("LGlove")
+					-- Sleeves Pointer
+					local RightSleeve = RightArm:FindFirstChild("Sleeve") or nil
+					local LeftSleeve = LeftArm:FindFirstChild("Sleeve") or nil
+					
+					RightArm.Transparency = ArmsColorsTransparency
+					RightArm.Reflectance = 0
+					RightArm.Mesh.TextureId = ""
+					RightArm.Color = ArmsColorsColor
+					RightArm.Material = "Neon"
+					
+					LeftArm.Transparency = ArmsColorsTransparency
+					LeftArm.Reflectance = 0
+					LeftArm.Mesh.TextureId = ""
+					LeftArm.Color = ArmsColorsColor
+					LeftArm.Material = "Neon"
+					
+					RightGlove.Transparency = ArmsColorsTransparency
+					RightGlove.Reflectance = 0
+					RightGlove.Mesh.TextureId = ""
+					RightGlove.Color = ArmsColorsColor
+					RightGlove.Material = "Neon"
+					
+					LeftGlove.Transparency = ArmsColorsTransparency
+					LeftGlove.Reflectance = 0
+					LeftGlove.Mesh.TextureId = ""
+					LeftGlove.Color = ArmsColorsColor
+					LeftGlove.Material = "Neon"
+					
+					if RightSleeve and LeftSleeve then
+					
+					RightSleeve.Transparency = ArmsColorsTransparency
+					RightSleeve.Reflectance = 0
+					RightSleeve.Mesh.TextureId = ""
+					RightSleeve.Color = ArmsColorsColor
+					RightSleeve.Material = "Neon"
+					
+					LeftSleeve.Transparency = ArmsColorsTransparency
+					LeftSleeve.Reflectance = 0
+					LeftSleeve.Mesh.TextureId = ""
+					LeftSleeve.Color = ArmsColorsColor
+					LeftSleeve.Material = "Neon"
+					
+					end
+				end
+				if v:IsA("BasePart") and v.Name ~= ("Right Arm" or "Left Arm" or "Flash") and v.Transparency~=1 then -- Weapons Pointer
+					local Weapons = v
+					
+					if Weapons:IsA("MeshPart") then Weapons.TextureID = "" end
+					if Weapons:FindFirstChildOfClass("SpecialMesh") then Weapons:FindFirstChildOfClass("SpecialMesh").TextureId = "" end
+					
+					Weapons.Transparency = ArmsColorsWeaponsTransparency
+					Weapons.Reflectance = 0
+					Weapons.Color = ArmsColorsWeaponsColor
+					Weapons.Material = "ForceField"
+					
+				end
+			end
+		end
+	end)
+end)
+
+MiscellaneousTabCategoryMain:AddToggle("Bunnyhop", false, function(val)
+    if val == true then
+        	for i,v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
+		if v:IsA("ValueBase") then
+			local originalvalue = Instance.new(tostring(v.ClassName),v)
+			originalvalue.Name = '__org'
+			originalvalue.Value = v.Value
+		end
+	end
+
+	for i,v in pairs(game.ReplicatedStorage.HUInfo:GetDescendants()) do
+		if v:IsA("ValueBase") then
+			local originalvalue = Instance.new(tostring(v.ClassName),v)
+			originalvalue.Name = '__org'
+			originalvalue.Value = v.Value
+		end
+	end
+
+	game:GetService("RunService"):BindToRenderStep("BunnyHop", 10000, function()
+		pcall(function()
+			if game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.Space) and game.Players.LocalPlayer.Character.Humanoid.Jumping then
+				for _, v in pairs(game.ReplicatedStorage.HUInfo:GetChildren()) do
+					v.WalkSpeed.Value = 500000
+				end
+				game.Players.LocalPlayer.Character.Humanoid.Jump = true
+			else
+				for _, v in pairs(game.ReplicatedStorage.HUInfo:GetChildren()) do
+					v.WalkSpeed.Value = v.WalkSpeed["__org"].Value
+				end
+			end
+		end)
+	end)
+    end
+end)
+
+MiscellaneousTabCategoryMain:AddToggle("Infinity Cash", false, function(val)
+    if val == true then
+		game.Players.LocalPlayer.Cash.Value = 16000
+		game.Players.LocalPlayer.Cash.Changed:Connect(function()
+			game.Players.LocalPlayer.Cash.Value = 16000
+		end)
+    end
+end)
+
+MiscellaneousTabCategoryMain:AddButton("Unlock All", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/kbKNbaM7", true))()
+end)
+
+MiscellaneousTabCategoryMain:AddButton("Discombobulator", function()
+    game.ReplicatedStorage.Events.Drop:FireServer(game.ReplicatedStorage.Weapons.Discombobulator, game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, 0, 0, false, game.Players.LocalPlayer, false, false)
+end)
+
+MiscellaneousTabCategoryMain:AddButton("Teleport", function()
+     local CT = game.Workspace.Map.CTSpawns
+local T = game.Workspace.Map.TSpawns
+local Team1 = game.Teams['Counter-Terrorists']
+local Team2 = game.Teams['Terrorists']
+local Player = game.Players.LocalPlayer
+local PlayerCharacter = Player.Character.HumanoidRootPart
+
+if Player.Team == Team1 then 
+    PlayerCharacter.CFrame = T:FindFirstChildOfClass('Part').CFrame 
+elseif Player.Team == Team2 then 
+    PlayerCharacter.CFrame = CT:FindFirstChildOfClass('Part').CFrame
+end 
+end)
+
+function createBeam(p1, p2)
+	local beam = Instance.new("Part", workspace)
+	beam.Anchored = true
+	beam.CanCollide = false
+	beam.Material = Enum.Material.ForceField
+	beam.Color = Color3.fromRGB(255, 255, 255)
+	beam.Size = Vector3.new(0.1, 0.1, (p1 - p2).magnitude)
+	beam.CFrame = CFrame.new(p1, p2) * CFrame.new(0, 0, -beam.Size.Z / 2)
+	return beam
+end
+
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall
+
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local callingscript = getcallingscript()
+    local args = {...}
+	
+	if not checkcaller() then
+		if method == "SetPrimaryPartCFrame" and self.Name == "Arms" and ViewmodelEnabled == true then
+			args[1] = args[1] * CFrame.new(Vector3.new(math.rad(ViewmodelX-180), math.rad(ViewmodelY-180), math.rad(ViewmodelZ-180)))
+		elseif method == "FireServer" and self.Name == "HitPart" then
+			spawn(function()
+				if BulletTracersEnabled == true then
+					local beam = createBeam(game.Players.LocalPlayer.Character.Head.CFrame.p, args[2])
+					for i = 1, 60 * 5 do
+						wait()
+						beam.Transparency = i / (60 * 5)
+					end
+					beam:Destroy()
+				end
+			end)
+			
+			if args[1].Parent == workspace.BacktrackFolder then
+				if args[1].PlayerName.Value.Character and args[1].PlayerName.Value.Character.Head ~= nil then
+					args[1] = args[1].PlayerName.Value.Character.Head
+				end
+			end
+		elseif method == "InvokeServer" and self.Name == "Moolah" then
+			return wait(99e99)
+		elseif method == "Kick" then
+			return
+		elseif method == "FireServer" and self.Name == "ControlTurn" and SECHS == true then
+			return
+		end
+	end
+    
+    return oldNamecall(self, unpack(args))
+end)
